@@ -2,9 +2,9 @@
 Preservr Data Visualizations
 Author: Luca Carnegie
 Description: This module provides visualization tools for analyzing and displaying
-            comment data for the Preservr project. It processes comment datasets
-            and generates visualizations to help understand engagement patterns
-            and content characteristics.
+             comment data for the Preservr project. It processes comment datasets
+             and generates a word cloud to visualize the most commented media owners by
+             the user.
 Input: Comment data files stored in the 'data' directory
 Output: Visualization files saved to the 'output' directory
 Date: 2023-11-21
@@ -38,12 +38,12 @@ def most_commented_barchart():
     
     plt.show()
 
-"""     # Save the figure
+    # Save the figure
     plt.savefig("output/media_owner_wordcloud.png")
     plt.close()
 
     print("Wordcloud saved to output/media_owner_wordcloud.png")
-"""
+
 
 def load_data():
     """
