@@ -1,0 +1,8 @@
+# Required packages for the codebase
+pandas
+matplotlib
+wordcloud
+json  # Built-in, no installation needed
+
+# Additional packages for specific visualizations
+collections  # Built-in, no installation needed
