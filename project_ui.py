@@ -9,7 +9,8 @@ def select_folder():
 # Create main window
 root = tk.Tk()
 root.title("Visualize Your Instagram Archive!")
-root.geometry("400x200")
+root.geometry("1000x750")
+root.configure(bg="#2E2E2E")
 
 # Center the window on the screen
 root.update_idletasks()
