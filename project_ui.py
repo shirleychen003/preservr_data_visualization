@@ -1,10 +1,19 @@
 import tkinter as tk
 from tkinter import filedialog
+import subprocess
+import sys
+
 
 def select_folder():
     folder_selected = filedialog.askdirectory()
     if folder_selected:
         label.config(text=f"Selected Folder: {folder_selected}")
+
+        # Run external Python script without blocking Tkinter
+        try:
+            subprocess.Popen([sys.executable, "summary_stats.py"], shell=True)
+        except Exception as e:
+            label.config(text=f"Error running script: {e}")
 
 # Create main window
 root = tk.Tk()
