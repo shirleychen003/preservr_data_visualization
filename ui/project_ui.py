@@ -1,9 +1,8 @@
 import tkinter as tk
-from tkinter import filedialog, messagebox, Toplevel
+from tkinter import filedialog, messagebox
 import subprocess
 import sys
 from PIL import Image, ImageTk
-
 
 class InstagramArchiveApp:
     def __init__(self, root):
@@ -18,6 +17,11 @@ class InstagramArchiveApp:
         self.btn_select = tk.Button(self.root, text="Select Folder", command=self.select_folder)
         self.btn_select.pack(pady=20)
 
+        # Create an initial white window to display the image
+        self.image_frame = tk.Frame(self.root, width=800, height=500, bg="white")
+        self.image_frame.pack(pady=20)
+
+        # Label for the selected folder
         self.label = tk.Label(self.root, text="No folder selected", wraplength=350, bg="#2E2E2E", fg="white")
         self.label.pack(pady=10)
 
@@ -58,21 +62,17 @@ class InstagramArchiveApp:
         try:
             subprocess.run([sys.executable, script_name, self.folder_selected], check=True)
             messagebox.showinfo("Success", f"Executed {script_name} successfully!")
-            self.display_visualization("output.png")
+            self.display_visualization("../images/story_likes_visualization.png")
         except subprocess.CalledProcessError as e:
             messagebox.showerror("Error", f"Error executing {script_name}: {e}")
 
     def display_visualization(self, image_path):
         try:
             img = Image.open(image_path)
-            img = img.resize((600, 400), Image.ANTIALIAS)
+            img = img.resize((800, 400), Image.LANCZOS)
             img = ImageTk.PhotoImage(img)
 
-            window = Toplevel(self.root)
-            window.title("Visualization Output")
-            window.geometry("620x450")
-
-            label = tk.Label(window, image=img)
+            label = tk.Label(self.image_frame, image=img, bg="white")
             label.image = img
             label.pack(pady=10)
         except Exception as e:
