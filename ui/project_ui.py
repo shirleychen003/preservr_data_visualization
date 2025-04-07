@@ -42,8 +42,7 @@ class InstagramArchiveApp:
 
     def create_script_buttons(self):
         script_names = {
-            "Run Story Likes": "../to_refactor/sc_story_likes_visualizations.py",
-            "Run Summary Stats": "../to_refactor/summary_stats.py",
+            "Run Story Likes": "../to_refactor/story_likes_visualizations.py",
             "Run Liked Posts": "../to_refactor/liked_posts.py",
             "Run Word Cloud Topics": "../to_refactor/wordcloud_topics.py",
         }
@@ -59,10 +58,18 @@ class InstagramArchiveApp:
         if not self.folder_selected:
             messagebox.showwarning("Warning", "Please select a folder first.")
             return
+
+        # Mapping of scripts to their output image
+        output_images = {
+            "../to_refactor/story_likes_visualizations.py": "../images/story_likes_visualization.png",
+            "../to_refactor/liked_posts.py": "../images/liked_posts_wordcloud.png",
+            "../to_refactor/wordcloud_topics.py": "../images/wordcloud_topics.png",
+        }
+
         try:
             subprocess.run([sys.executable, script_name, self.folder_selected], check=True)
             messagebox.showinfo("Success", f"Executed {script_name} successfully!")
-            self.display_visualization("../images/story_likes_visualization.png")
+            self.display_visualization(output_images.get(script_name, ""))
         except subprocess.CalledProcessError as e:
             messagebox.showerror("Error", f"Error executing {script_name}: {e}")
 
