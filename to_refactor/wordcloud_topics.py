@@ -17,7 +17,7 @@ topics = [
 text = " ".join(topics)
 
 # Generate word cloud
-wc = WordCloud(width=800, height=400, background_color="white").generate(text)
+wc = WordCloud(width=800, height=500, background_color="white").generate(text)
 
 output_path = "../images/wordcloud_topics.png"
 

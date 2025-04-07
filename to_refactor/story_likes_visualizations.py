@@ -32,7 +32,7 @@ most_active_liker, max_likes = like_counts.most_common(1)[0]
 sorted_likes = dict(sorted(like_counts.items(), key=lambda x: x[1], reverse=True))
 
 # Plot Word Cloud
-wc = WordCloud(width=800, height=400, background_color="white", colormap="coolwarm")
+wc = WordCloud(width=800, height=500, background_color="white", colormap="coolwarm")
 wc.generate_from_frequencies(like_counts)
 
 plt.figure(figsize=(10, 5))

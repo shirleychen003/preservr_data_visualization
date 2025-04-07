@@ -20,6 +20,7 @@ class InstagramArchiveApp:
         # Create an initial white window to display the image
         self.image_frame = tk.Frame(self.root, width=800, height=500, bg="white")
         self.image_frame.pack(pady=20)
+        self.image_label = None
 
         # Label for the selected folder
         self.label = tk.Label(self.root, text="No folder selected", wraplength=350, bg="#2E2E2E", fg="white")
@@ -76,15 +77,18 @@ class InstagramArchiveApp:
     def display_visualization(self, image_path):
         try:
             img = Image.open(image_path)
-            img = img.resize((800, 400), Image.LANCZOS)
+            img = img.resize((800, 500), Image.LANCZOS)
             img = ImageTk.PhotoImage(img)
 
-            label = tk.Label(self.image_frame, image=img, bg="white")
-            label.image = img
-            label.pack(pady=10)
+            if self.image_label is not None:
+                self.image_label.destroy()
+
+            self.image_label = tk.Label(self.image_frame, image=img, bg="white")
+            self.image_label.image = img
+            self.image_label.pack(pady=10)
+
         except Exception as e:
             messagebox.showerror("Error", f"Could not load visualization: {e}")
-
 
 # Run the application
 if __name__ == "__main__":
