@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from wordcloud import WordCloud
 
 # Load the JSON file
-with open("recommended_topics.json", "r", encoding="utf-8") as file:
+with open("../recommended_topics.json", "r", encoding="utf-8") as file:
     data = json.load(file)
 
 # Extract topic names

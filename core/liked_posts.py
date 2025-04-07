@@ -50,7 +50,7 @@ def load_data():
     """
     # Load JSON file
     global titles, title_counts
-    with open("data/liked_posts.json", "r", encoding="utf-8") as file:
+    with open("../liked_posts.json", "r", encoding="utf-8") as file:
         data = json.load(file)
 
     # Extract titles (media owners) from the data

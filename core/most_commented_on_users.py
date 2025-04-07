@@ -51,7 +51,7 @@ def load_data():
     """
     # Load JSON file
     global owners, owner_counts
-    with open("data/post_comments_1.json", "r", encoding="utf-8") as file:
+    with open("../post_comments_1.json", "r", encoding="utf-8") as file:
         data = json.load(file)
 
     # Extract media owners from the data

@@ -4,7 +4,7 @@ from collections import Counter
 from wordcloud import WordCloud
 
 # Load JSON file
-with open("../test_data/story_likes.json", "r", encoding="utf-8") as file:
+with open("../story_likes.json", "r", encoding="utf-8") as file:
     data = json.load(file)
 
 # Extract story likes
