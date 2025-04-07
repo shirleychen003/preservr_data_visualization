@@ -16,7 +16,7 @@ from collections import Counter
 from wordcloud import WordCloud
 
 # Load JSON file
-with open("../test_data/story_likes.json", "r", encoding="utf-8") as file:
+with open("../preservr_data_visualization/test_data/story_likes.json", "r", encoding="utf-8") as file:
     data = json.load(file)
 
 # Extract story likes
@@ -40,7 +40,7 @@ plt.imshow(wc, interpolation="bilinear")
 plt.axis("off")
 plt.title(f"Frequent Story Likers (Top: {most_active_liker} - {max_likes} likes)")
 
-output_path = "../images/story_likes_visualization.png"
+output_path = "../preservr_data_visualization/images/story_likes_visualization.png"
 
 # Save the visualization
 plt.figure(figsize=(10, 5))
@@ -51,5 +51,3 @@ plt.title(f"Frequent Story Likers (Top: {most_active_liker} - {max_likes} likes)
 # Save as PNG
 plt.savefig(output_path, dpi=300, bbox_inches="tight")
 print(f"Visualization saved to: {output_path}")
-
-plt.show()

@@ -88,11 +88,15 @@ class InstagramArchiveApp:
             self.label.config(text=status_text)
 
     def create_script_buttons(self):
+        # Get the directory containing the UI script
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        parent_dir = os.path.dirname(current_dir)
+        
         script_names = {
-            "Run Story Likes": "../core/story_likes.py",
-            "Run Liked Posts": "../core/liked_posts.py",
-            "Run Word Cloud Topics": "../core/top_topics.py",
-            "Run Most Commented On Users": "../core/most_commented_on_users.py",
+            "Run Story Likes": os.path.join(parent_dir, "core", "story_likes.py"),
+            "Run Liked Posts": os.path.join(parent_dir, "core", "liked_posts.py"),
+            "Run Word Cloud Topics": os.path.join(parent_dir, "core", "top_topics.py"),
+            "Run Most Commented On Users": os.path.join(parent_dir, "core", "most_commented_on_users.py"),
         }
 
         button_frame = tk.Frame(self.root, bg="#2e2e2e")
@@ -107,18 +111,31 @@ class InstagramArchiveApp:
             messagebox.showwarning("Warning", "Please select a folder first.")
             return
 
+        # Get the directory containing the UI script
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        parent_dir = os.path.dirname(current_dir)
+        
         # Mapping of scripts to their output image
         output_images = {
-            "../core/story_likes.py": "../images/story_likes_visualization.png",
-            "../core/liked_posts.py": "../images/liked_posts_wordcloud.png",
-            "../core/top_topics.py": "../images/top_topics.png",
-            "../core/post_comments_1.py": "../images/post_comments.png",
+            os.path.join(parent_dir, "core", "story_likes.py"): 
+                os.path.join(parent_dir, "images", "story_likes_visualization.png"),
+            os.path.join(parent_dir, "core", "liked_posts.py"): 
+                os.path.join(parent_dir, "images", "liked_posts_wordcloud.png"),
+            os.path.join(parent_dir, "core", "top_topics.py"): 
+                os.path.join(parent_dir, "images", "top_topics.png"),
+            os.path.join(parent_dir, "core", "most_commented_on_users.py"): 
+                os.path.join(parent_dir, "images", "post_comments.png"),
         }
 
         try:
             subprocess.run([sys.executable, script_name, self.folder_selected], check=True)
             messagebox.showinfo("Success", f"Executed {script_name} successfully!")
-            self.display_visualization(output_images.get(script_name, ""))
+            output_image = output_images.get(script_name)
+            if output_image and os.path.exists(output_image):
+                self.display_visualization(output_image)
+            else:
+                messagebox.showwarning("Warning", "Visualization file not found")
+        
         except subprocess.CalledProcessError as e:
             messagebox.showerror("Error", f"Error executing {script_name}: {e}")
 

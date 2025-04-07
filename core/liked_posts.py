@@ -34,8 +34,6 @@ def most_liked_wordcloud():
     plt.axis("off")
     plt.title("Accounts You Liked Most")
     plt.tight_layout()
-    
-    plt.show()
 
     # Save the figure
     plt.figure(figsize=(12, 8))
@@ -44,7 +42,7 @@ def most_liked_wordcloud():
     plt.title("Accounts You Liked Most")
     plt.tight_layout()
 
-    plt.savefig("../images/liked_posts_wordcloud.png")
+    plt.savefig("../preservr_data_visualization/images/liked_posts_wordcloud.png")
     plt.close()
 
 
@@ -54,7 +52,7 @@ def load_data():
     """
     # Load JSON file
     global titles, title_counts
-    with open("../test_data/liked_posts.json", "r", encoding="utf-8") as file:
+    with open("../preservr_data_visualization/test_data/liked_posts.json", "r", encoding="utf-8") as file:
         data = json.load(file)
 
     # Extract titles (media owners) from the data
