@@ -9,27 +9,24 @@ class InstagramArchiveApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Visualize Your Instagram Archive!")
-        self.root.geometry("1000x0")
-        self.root.configure(bg="#2E2E2E")
+        self.root.geometry("1000x850")
+        self.root.configure(bg="#2e2e2e")
 
-        self.center_window(1000, 750)
+        self.center_window(1000, 850)
         self.folder_selected = None
-        self.json_files = {
-            'liked_posts': None,
-            'post_comments': None,
-            'recommended_topics': None,
-            'story_likes': None
-        }
-
-        self.btn_select = tk.Button(self.root, text="Select Folder", command=self.select_folder)
-        self.btn_select.pack(pady=20)
+        self.json_files = {}
 
         # Create an initial white window to display the image
         self.image_frame = tk.Frame(self.root, width=800, height=500, bg="white")
         self.image_frame.pack(pady=20)
+        self.image_label = None
 
-        # Label for the selected folder and files
-        self.label = tk.Label(self.root, text="No folder selected", wraplength=700, bg="#2E2E2E", fg="white")
+        # Button to select folder
+        self.btn_select = tk.Button(self.root, text="Select Folder", command=self.select_folder)
+        self.btn_select.pack(pady=20)
+
+        # Label for the selected folder
+        self.label = tk.Label(self.root, text="No folder selected", wraplength=350, bg="#2e2e2e", fg="white")
         self.label.pack(pady=10)
 
         # Buttons to run scripts
@@ -45,9 +42,11 @@ class InstagramArchiveApp:
     def select_folder(self):
         self.folder_selected = filedialog.askdirectory()
         if self.folder_selected:
+            self.label.config(text=f"Selected Folder: {self.folder_selected}")
+
             # Check for required JSON files
             file_status = []
-            
+
             # Look for liked_posts.json
             liked_posts_path = os.path.join(self.folder_selected, "liked_posts.json")
             if os.path.exists(liked_posts_path):
@@ -56,7 +55,7 @@ class InstagramArchiveApp:
             else:
                 self.json_files['liked_posts'] = None
                 file_status.append("❌ liked_posts.json not found")
-                
+
             # Look for post_comments_1.json
             post_comments_path = os.path.join(self.folder_selected, "post_comments_1.json")
             if os.path.exists(post_comments_path):
@@ -65,7 +64,7 @@ class InstagramArchiveApp:
             else:
                 self.json_files['post_comments'] = None
                 file_status.append("❌ post_comments_1.json not found")
-                
+
             # Look for recommended_topics.json
             recommended_topics_path = os.path.join(self.folder_selected, "recommended_topics.json")
             if os.path.exists(recommended_topics_path):
@@ -74,7 +73,7 @@ class InstagramArchiveApp:
             else:
                 self.json_files['recommended_topics'] = None
                 file_status.append("❌ recommended_topics.json not found")
-                
+
             # Look for story_likes.json
             story_likes_path = os.path.join(self.folder_selected, "story_likes.json")
             if os.path.exists(story_likes_path):
@@ -83,108 +82,61 @@ class InstagramArchiveApp:
             else:
                 self.json_files['story_likes'] = None
                 file_status.append("❌ story_likes.json not found")
-                
+
             # Update the label with folder path and file statuses
             status_text = f"Selected Folder: {self.folder_selected}\n" + "\n".join(file_status)
             self.label.config(text=status_text)
 
     def create_script_buttons(self):
-        # Get the absolute path to the core directory
-        base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "core"))
-        
         script_names = {
-            "Most Liked Users (Stories)": {
-                "script": os.path.join(base_dir, "story_likes.py"),
-                "required_file": "story_likes",
-                "output_image": "story_likes_visualization.png"
-            },
-            "Most Commented On Users": {
-                "script": os.path.join(base_dir, "most_commented_on_users.py"),
-                "required_file": "post_comments",  # Uses post_comments_1.json
-                "output_image": "media_owner_wordcloud.png"
-            },
-            "Most Liked Users (Posts)": {
-                "script": os.path.join(base_dir, "liked_posts.py"),
-                "required_file": "liked_posts",
-                "output_image": "liked_posts_visualization.png"
-            },
-            "Top Topics": {
-                "script": os.path.join(base_dir, "top_topics.py"),
-                "required_file": "recommended_topics",
-                "output_image": "wordcloud_topics.png"
-            },
+            "Run Story Likes": "../core/story_likes.py",
+            "Run Liked Posts": "../core/liked_posts.py",
+            "Run Word Cloud Topics": "../core/top_topics.py",
+            "Run Most Commented On Users": "../core/most_commented_on_users.py",
         }
-    
-        button_frame = tk.Frame(self.root, bg="#2E2E2E")
+
+        button_frame = tk.Frame(self.root, bg="#2e2e2e")
         button_frame.pack(pady=10)
-    
-        for text, info in script_names.items():
-            btn = tk.Button(button_frame, text=text, command=lambda info=info: self.run_script(info))
+
+        for text, script in script_names.items():
+            btn = tk.Button(button_frame, text=text, command=lambda s=script: self.run_script(s))
             btn.pack(side=tk.LEFT, padx=5, pady=5)
 
-    def run_script(self, script_info):
+    def run_script(self, script_name):
         if not self.folder_selected:
             messagebox.showwarning("Warning", "Please select a folder first.")
             return
-            
-        # Check if the required file is available
-        if script_info["required_file"] and not self.json_files[script_info["required_file"]]:
-            messagebox.showwarning(
-                "Missing File", 
-                f"Required file ({script_info['required_file']}.json) was not found in the selected folder."
-            )
-            return
-            
+
+        # Mapping of scripts to their output image
+        output_images = {
+            "../core/story_likes.py": "../images/story_likes_visualization.png",
+            "../core/liked_posts.py": "../images/liked_posts_wordcloud.png",
+            "../core/top_topics.py": "../images/top_topics.png",
+            "../core/post_comments_1.py": "../images/post_comments.png",
+        }
+
         try:
-            # Clear previous visualization
-            for widget in self.image_frame.winfo_children():
-                widget.destroy()
-                
-            # Build command with file paths
-            cmd = [sys.executable, script_info["script"]]
-            
-            # Add all available JSON files as arguments
-            for file_key, file_path in self.json_files.items():
-                if file_path:
-                    cmd.extend([f"--{file_key.replace('_', '-')}", file_path])
-            
-            # Run the script
-            subprocess.run(cmd, check=True)
-            
-            # Display the visualization
-            image_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "images"))
-            self.display_visualization(os.path.join(image_dir, script_info["output_image"]))
-            
-            messagebox.showinfo("Success", f"Analysis completed successfully!")
+            subprocess.run([sys.executable, script_name, self.folder_selected], check=True)
+            messagebox.showinfo("Success", f"Executed {script_name} successfully!")
+            self.display_visualization(output_images.get(script_name, ""))
         except subprocess.CalledProcessError as e:
-            messagebox.showerror("Error", f"Error executing script: {e}")
-        except Exception as e:
-            messagebox.showerror("Error", f"An error occurred: {e}")
+            messagebox.showerror("Error", f"Error executing {script_name}: {e}")
 
     def display_visualization(self, image_path):
         try:
             img = Image.open(image_path)
-            
-            # Calculate resize dimensions while maintaining aspect ratio
-            img_width, img_height = img.size
-            frame_width, frame_height = 800, 400
-            
-            # Resize while maintaining aspect ratio
-            if img_width > frame_width or img_height > frame_height:
-                ratio = min(frame_width/img_width, frame_height/img_height)
-                new_width = int(img_width * ratio)
-                new_height = int(img_height * ratio)
-                img = img.resize((new_width, new_height), Image.LANCZOS)
-            
-            img_tk = ImageTk.PhotoImage(img)
-            label = tk.Label(self.image_frame, image=img_tk, bg="white")
-            label.image = img_tk  # Keep a reference to prevent garbage collection
-            label.pack(pady=10)
+            img = img.resize((800, 500), Image.LANCZOS)
+            img = ImageTk.PhotoImage(img)
+
+            if self.image_label is not None:
+                self.image_label.destroy()
+
+            self.image_label = tk.Label(self.image_frame, image=img, bg="white")
+            self.image_label.image = img
+            self.image_label.pack(pady=10)
+
         except Exception as e:
             messagebox.showerror("Error", f"Could not load visualization: {e}")
-            label = tk.Label(self.image_frame, text=f"Visualization not found: {os.path.basename(image_path)}", bg="white")
-            label.pack(pady=10)
-
 
 # Run the application
 if __name__ == "__main__":

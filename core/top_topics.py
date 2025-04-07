@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from wordcloud import WordCloud
 
 # Load the JSON file
-with open("../recommended_topics.json", "r", encoding="utf-8") as file:
+with open("../test_data/recommended_topics.json", "r", encoding="utf-8") as file:
     data = json.load(file)
 
 # Extract topic names
@@ -17,10 +17,23 @@ topics = [
 text = " ".join(topics)
 
 # Generate word cloud
-wordcloud = WordCloud(width=800, height=400, background_color="white").generate(text)
+wc = WordCloud(width=800, height=500, background_color="white").generate(text)
+
+output_path = "../images/top_topics.png"
 
 # Print the word cloud
 plt.figure(figsize=(10, 5))
-plt.imshow(wordcloud, interpolation="bilinear")
+plt.imshow(wc, interpolation="bilinear")
 plt.axis("off")
+plt.show()
+
+# Save the visualization
+plt.figure(figsize=(10, 5))
+plt.imshow(wc, interpolation="bilinear")
+plt.axis("off")
+
+# Save as PNG
+plt.savefig(output_path, dpi=300, bbox_inches="tight")
+print(f"Visualization saved to: {output_path}")
+
 plt.show()
