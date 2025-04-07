@@ -9,21 +9,22 @@ class InstagramArchiveApp:
         self.root = root
         self.root.title("Visualize Your Instagram Archive!")
         self.root.geometry("1000x750")
-        self.root.configure(bg="#2E2E2E")
+        self.root.configure(bg="#2e2e2e")
 
         self.center_window(1000, 750)
         self.folder_selected = None
-
-        self.btn_select = tk.Button(self.root, text="Select Folder", command=self.select_folder)
-        self.btn_select.pack(pady=20)
 
         # Create an initial white window to display the image
         self.image_frame = tk.Frame(self.root, width=800, height=500, bg="white")
         self.image_frame.pack(pady=20)
         self.image_label = None
 
+        # Button to select folder
+        self.btn_select = tk.Button(self.root, text="Select Folder", command=self.select_folder)
+        self.btn_select.pack(pady=20)
+
         # Label for the selected folder
-        self.label = tk.Label(self.root, text="No folder selected", wraplength=350, bg="#2E2E2E", fg="white")
+        self.label = tk.Label(self.root, text="No folder selected", wraplength=350, bg="#2e2e2e", fg="white")
         self.label.pack(pady=10)
 
         # Buttons to run scripts
@@ -48,7 +49,7 @@ class InstagramArchiveApp:
             "Run Word Cloud Topics": "../to_refactor/wordcloud_topics.py",
         }
 
-        button_frame = tk.Frame(self.root, bg="#2E2E2E")
+        button_frame = tk.Frame(self.root, bg="#2e2e2e")
         button_frame.pack(pady=10)
 
         for text, script in script_names.items():
