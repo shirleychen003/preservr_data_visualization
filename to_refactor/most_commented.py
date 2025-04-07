@@ -39,10 +39,14 @@ def most_commented_barchart():
     plt.show()
 
     # Save the figure
-    plt.savefig("output/media_owner_wordcloud.png")
-    plt.close()
+    plt.figure(figsize=(12, 8))
+    plt.imshow(wordcloud, interpolation='bilinear')
+    plt.axis("off")
+    plt.title("Accounts You Commented On Most")
+    plt.tight_layout()
 
-    print("Wordcloud saved to output/media_owner_wordcloud.png")
+    plt.savefig("../images/post_comments.png")
+    plt.close()
 
 
 def load_data():
@@ -51,7 +55,7 @@ def load_data():
     """
     # Load JSON file
     global owners, owner_counts
-    with open("data/post_comments_1.json", "r", encoding="utf-8") as file:
+    with open("../test_data/post_comments_1.json", "r", encoding="utf-8") as file:
         data = json.load(file)
 
     # Extract media owners from the data
@@ -70,7 +74,6 @@ def load_data():
     owners = df
     owner_counts.columns = ["Media Owner", "Comment Count"]
     owner_counts = owner_counts[owner_counts["Media Owner"] != "Unknown"]
-    
 
 def main():
     load_data()

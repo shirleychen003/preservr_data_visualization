@@ -47,8 +47,6 @@ def most_liked_wordcloud():
     plt.savefig("../images/liked_posts_wordcloud.png")
     plt.close()
 
-    print("Wordcloud saved to output/liked_posts_wordcloud.png")
-
 
 def load_data():
     """

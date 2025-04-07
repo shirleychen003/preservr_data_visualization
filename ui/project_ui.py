@@ -3,16 +3,18 @@ from tkinter import filedialog, messagebox
 import subprocess
 import sys
 from PIL import Image, ImageTk
+import os
 
 class InstagramArchiveApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Visualize Your Instagram Archive!")
-        self.root.geometry("1000x750")
+        self.root.geometry("1000x850")
         self.root.configure(bg="#2e2e2e")
 
-        self.center_window(1000, 750)
+        self.center_window(1000, 850)
         self.folder_selected = None
+        self.json_files = {}
 
         # Create an initial white window to display the image
         self.image_frame = tk.Frame(self.root, width=800, height=500, bg="white")
@@ -42,11 +44,55 @@ class InstagramArchiveApp:
         if self.folder_selected:
             self.label.config(text=f"Selected Folder: {self.folder_selected}")
 
+            # Check for required JSON files
+            file_status = []
+
+            # Look for liked_posts.json
+            liked_posts_path = os.path.join(self.folder_selected, "liked_posts.json")
+            if os.path.exists(liked_posts_path):
+                self.json_files['liked_posts'] = liked_posts_path
+                file_status.append("✅ liked_posts.json found")
+            else:
+                self.json_files['liked_posts'] = None
+                file_status.append("❌ liked_posts.json not found")
+
+            # Look for post_comments_1.json
+            post_comments_path = os.path.join(self.folder_selected, "post_comments_1.json")
+            if os.path.exists(post_comments_path):
+                self.json_files['post_comments'] = post_comments_path
+                file_status.append("✅ post_comments_1.json found")
+            else:
+                self.json_files['post_comments'] = None
+                file_status.append("❌ post_comments_1.json not found")
+
+            # Look for recommended_topics.json
+            recommended_topics_path = os.path.join(self.folder_selected, "recommended_topics.json")
+            if os.path.exists(recommended_topics_path):
+                self.json_files['recommended_topics'] = recommended_topics_path
+                file_status.append("✅ recommended_topics.json found")
+            else:
+                self.json_files['recommended_topics'] = None
+                file_status.append("❌ recommended_topics.json not found")
+
+            # Look for story_likes.json
+            story_likes_path = os.path.join(self.folder_selected, "story_likes.json")
+            if os.path.exists(story_likes_path):
+                self.json_files['story_likes'] = story_likes_path
+                file_status.append("✅ story_likes.json found")
+            else:
+                self.json_files['story_likes'] = None
+                file_status.append("❌ story_likes.json not found")
+
+            # Update the label with folder path and file statuses
+            status_text = f"Selected Folder: {self.folder_selected}\n" + "\n".join(file_status)
+            self.label.config(text=status_text)
+
     def create_script_buttons(self):
         script_names = {
             "Run Story Likes": "../to_refactor/story_likes_visualizations.py",
             "Run Liked Posts": "../to_refactor/liked_posts.py",
             "Run Word Cloud Topics": "../to_refactor/wordcloud_topics.py",
+            "Run Most Commented On Users": "../to_refactor/most_commented.py",
         }
 
         button_frame = tk.Frame(self.root, bg="#2e2e2e")
@@ -66,6 +112,7 @@ class InstagramArchiveApp:
             "../to_refactor/story_likes_visualizations.py": "../images/story_likes_visualization.png",
             "../to_refactor/liked_posts.py": "../images/liked_posts_wordcloud.png",
             "../to_refactor/wordcloud_topics.py": "../images/wordcloud_topics.png",
+            "../to_refactor/post_comments_1.py": "../images/post_comments.png",
         }
 
         try:
