@@ -49,7 +49,8 @@ class InstagramArchiveApp:
                 'liked_posts': None,
                 'post_comments': None,
                 'recommended_topics': None,
-                'story_likes': None
+                'story_likes': None,
+                'audience_insights': None
             }
 
             # Recursive search for required JSON files
@@ -67,6 +68,9 @@ class InstagramArchiveApp:
                     elif file == "story_likes.json" and self.json_files['story_likes'] is None:
                         self.json_files['story_likes'] = os.path.join(root_dir, file)
                         file_status.append("✅ story_likes.json found")
+                    elif file == "audience_insights.json" and self.json_files['audience_insights'] is None:
+                        self.json_files['audience_insights'] = os.path.join(root_dir, file)
+                        file_status.append("✅ audience_insights.json found")
 
             # For any files still not found, add missing status
             if self.json_files['liked_posts'] is None:
@@ -76,6 +80,8 @@ class InstagramArchiveApp:
             if self.json_files['recommended_topics'] is None:
                 file_status.append("❌ recommended_topics.json not found")
             if self.json_files['story_likes'] is None:
+                file_status.append("❌ story_likes.json not found")
+            if self.json_files['audience_insights'] is None:
                 file_status.append("❌ story_likes.json not found")
 
             status_text = f"Selected Folder: {self.folder_selected}\n" + "\n".join(file_status)
@@ -91,6 +97,7 @@ class InstagramArchiveApp:
             "Run Liked Posts": os.path.join(parent_dir, "core", "most_liked_users_posts.py"),
             "Run Word Cloud Topics": os.path.join(parent_dir, "core", "top_topics.py"),
             "Run Most Commented On Users": os.path.join(parent_dir, "core", "most_commented_on_users.py"),
+            "Run Age and Gender Distribution": os.path.join(parent_dir, "core", "age_gender_distribution.py"),
         }
 
         button_frame = tk.Frame(self.root, bg="#2e2e2e")
@@ -109,26 +116,30 @@ class InstagramArchiveApp:
         current_dir = os.path.dirname(os.path.abspath(__file__))
         parent_dir = os.path.dirname(current_dir)
 
-        # Mapping of scripts to their output image
+        # Assuming the visualizations are saved in the same folder as the selected folder
         output_images = {
-            os.path.join(parent_dir, "core", "most_liked_users_stories.py"):
-                os.path.join(parent_dir, "images", "story_likes_visualization.png"),
-            os.path.join(parent_dir, "core", "most_liked_users_posts.py"):
-                os.path.join(parent_dir, "images", "liked_posts_wordcloud.png"),
-            os.path.join(parent_dir, "core", "top_topics.py"):
-                os.path.join(parent_dir, "images", "top_topics.png"),
-            os.path.join(parent_dir, "core", "most_commented_on_users.py"):
-                os.path.join(parent_dir, "images", "post_comments.png"),
+            "most_liked_users_stories.py": "story_likes_visualization.png",
+            "most_liked_users_posts.py": "liked_posts_wordcloud.png",
+            "top_topics.py": "top_topics.png",
+            "most_commented_on_users.py": "post_comments.png",
+            "age_gender_distribution.py": "age_gender_distribution.png"
         }
 
         try:
             subprocess.run([sys.executable, script_name, self.folder_selected], check=True)
             messagebox.showinfo("Success", f"Executed {script_name} successfully!")
-            output_image = output_images.get(script_name)
-            if output_image and os.path.exists(output_image):
-                self.display_visualization(output_image)
+
+            # Dynamic path to visualization
+            script_name_only = os.path.basename(script_name)
+            output_image_name = output_images.get(script_name_only)
+            if output_image_name:
+                output_image_path = os.path.join(self.folder_selected, output_image_name)
+                if os.path.exists(output_image_path):
+                    self.display_visualization(output_image_path)
+                else:
+                    messagebox.showwarning("Warning", "Visualization file not found in selected folder")
             else:
-                messagebox.showwarning("Warning", "Visualization file not found")
+                messagebox.showwarning("Warning", "No output image path found for this script")
 
         except subprocess.CalledProcessError as e:
             messagebox.showerror("Error", f"Error executing {script_name}: {e}")

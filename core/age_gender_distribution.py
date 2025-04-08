@@ -1,25 +1,8 @@
-"""
-Preservr Data Visualizations - Age Distribution by Gender
-Author: Shirley Chen
-Description: This module provides visualization tools for analyzing and displaying
-             follower age distribution segmented by gender for the Preservr project.
-             It extracts audience data from Instagram insights and generates a grouped
-             bar chart to show how follower age groups are distributed across men and women.
-Input: audience_insights.json file stored in the provided folder path.
-Output: Visualization saved as age_distribution_by_gender.png in the same folder.
-Date: 2025-04
-"""
-
 import os
 import sys
 import json
 import matplotlib.pyplot as plt
 import numpy as np
-
-# For testing:
-# Load JSON data
-# with open('../test_data/audience_insights.json', 'r') as f:
-#     data = json.load(f)
 
 def find_file_in_subdirectories(folder_path, filename):
     """
@@ -51,7 +34,7 @@ def generate_age_distribution_chart(folder_path):
         return
 
     # Define output file path
-    output_path = os.path.join(folder_path, "age_distribution_by_gender.png")
+    output_path = os.path.join(folder_path, "age_gender_distribution.png")
 
     # Load JSON data
     with open(input_path, "r", encoding="utf-8") as file:
@@ -95,12 +78,11 @@ def generate_age_distribution_chart(folder_path):
 
     # Save the figure
     plt.savefig(output_path, dpi=300, bbox_inches="tight")
-    print(f"Visualization saved to: {output_path}")
 
 # Entry point for CLI usage
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("Usage: python age_distribution_by_gender.py <folder_path>")
+        print("Usage: python age_gender_distribution.py <folder_path>")
         sys.exit(1)
 
     folder = sys.argv[1]

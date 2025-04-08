@@ -65,8 +65,9 @@ def generate_story_likes_wordcloud(folder_path):
     plt.imshow(wc, interpolation="bilinear")
     plt.axis("off")
     plt.title(f"Frequent Story Likers (Top: {most_active_liker} - {max_likes} likes)")
+
+    # Save the figure
     plt.savefig(output_path, dpi=300, bbox_inches="tight")
-    print(f"Visualization saved to: {output_path}")
 
 # Entry point for CLI usage
 if __name__ == "__main__":
