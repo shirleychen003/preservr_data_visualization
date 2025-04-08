@@ -87,8 +87,8 @@ class InstagramArchiveApp:
         parent_dir = os.path.dirname(current_dir)
 
         script_names = {
-            "Run Story Likes": os.path.join(parent_dir, "core", "story_likes.py"),
-            "Run Liked Posts": os.path.join(parent_dir, "core", "liked_posts.py"),
+            "Run Story Likes": os.path.join(parent_dir, "core", "most_liked_users_stories.py"),
+            "Run Liked Posts": os.path.join(parent_dir, "core", "most_liked_users_posts.py"),
             "Run Word Cloud Topics": os.path.join(parent_dir, "core", "top_topics.py"),
             "Run Most Commented On Users": os.path.join(parent_dir, "core", "most_commented_on_users.py"),
         }
@@ -111,9 +111,9 @@ class InstagramArchiveApp:
 
         # Mapping of scripts to their output image
         output_images = {
-            os.path.join(parent_dir, "core", "story_likes.py"):
+            os.path.join(parent_dir, "core", "most_liked_users_stories.py"):
                 os.path.join(parent_dir, "images", "story_likes_visualization.png"),
-            os.path.join(parent_dir, "core", "liked_posts.py"):
+            os.path.join(parent_dir, "core", "most_liked_users_posts.py"):
                 os.path.join(parent_dir, "images", "liked_posts_wordcloud.png"),
             os.path.join(parent_dir, "core", "top_topics.py"):
                 os.path.join(parent_dir, "images", "top_topics.png"),
