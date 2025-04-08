@@ -13,6 +13,8 @@ import json
 import matplotlib.pyplot as plt
 import pandas as pd
 from wordcloud import WordCloud
+import sys
+import os
 
 titles = []
 title_counts = None
@@ -46,13 +48,17 @@ def most_liked_wordcloud():
     plt.close()
 
 
-def load_data():
+def load_data(folder_path):
     """
-    Load the liked posts data from the JSON file.
+    Load the liked posts data from the JSON file in the specified folder.
     """
-    # Load JSON file
     global titles, title_counts
-    with open("../preservr_data_visualization/test_data/liked_posts.json", "r", encoding="utf-8") as file:
+
+    # Construct the full path to liked_posts.json
+    liked_posts_path = os.path.join(folder_path, "liked_posts.json")
+
+    # Load JSON file
+    with open(liked_posts_path, "r", encoding="utf-8") as file:
         data = json.load(file)
 
     # Extract titles (media owners) from the data
@@ -60,7 +66,7 @@ def load_data():
     for item in data.get("likes_media_likes", []):
         try:
             title = item.get("title", "Unknown")
-            if title:  # Only add if title is not empty
+            if title:
                 media_titles.append(title)
         except (KeyError, TypeError):
             continue
@@ -70,6 +76,7 @@ def load_data():
     title_counts = df["Title"].value_counts().reset_index()
     title_counts.columns = ["Title", "Like Count"]
     titles = df
+
     # Remove unknown entries
     title_counts = title_counts[title_counts["Title"] != "Unknown"]
 
@@ -78,4 +85,9 @@ def main():
     most_liked_wordcloud()
 
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) < 2:
+        print("Usage: python liked_posts.py <folder_path>")
+        sys.exit(1)
+
+    folder = sys.argv[1]
+    load_data(folder)
