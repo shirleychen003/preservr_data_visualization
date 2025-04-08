@@ -4,12 +4,29 @@ import json
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud
 
+
+def find_file_in_subdirectories(folder_path, filename):
+    """
+    Recursively search for the specified file in subdirectories.
+    """
+    for root, dirs, files in os.walk(folder_path):
+        if filename in files:
+            return os.path.join(root, filename)
+    return None
+
+
 def generate_topic_wordcloud(folder_path):
     """
     Generate a word cloud from recommended topics in the given folder.
     """
-    # Construct full paths for input and output
-    topics_path = os.path.join(folder_path, "recommended_topics.json")
+    # Search for the recommended_topics.json file in the folder and its subdirectories
+    topics_path = find_file_in_subdirectories(folder_path, "recommended_topics.json")
+
+    if topics_path is None:
+        print(f"Error: Could not find recommended_topics.json in {folder_path} or its subdirectories")
+        return
+
+    # Construct the output path
     output_path = os.path.join(folder_path, "top_topics.png")
 
     # Load the JSON file
@@ -37,6 +54,7 @@ def generate_topic_wordcloud(folder_path):
     # Save as PNG
     plt.savefig(output_path, dpi=300, bbox_inches="tight")
     print(f"Visualization saved to: {output_path}")
+
 
 # Entry point for command-line use
 if __name__ == "__main__":

@@ -44,46 +44,40 @@ class InstagramArchiveApp:
         if self.folder_selected:
             self.label.config(text=f"Selected Folder: {self.folder_selected}")
 
-            # Check for required JSON files
             file_status = []
+            self.json_files = {
+                'liked_posts': None,
+                'post_comments': None,
+                'recommended_topics': None,
+                'story_likes': None
+            }
 
-            # Look for liked_posts.json
-            liked_posts_path = os.path.join(self.folder_selected, "liked_posts.json")
-            if os.path.exists(liked_posts_path):
-                self.json_files['liked_posts'] = liked_posts_path
-                file_status.append("✅ liked_posts.json found")
-            else:
-                self.json_files['liked_posts'] = None
+            # Recursive search for required JSON files
+            for root_dir, _, files in os.walk(self.folder_selected):
+                for file in files:
+                    if file == "liked_posts.json" and self.json_files['liked_posts'] is None:
+                        self.json_files['liked_posts'] = os.path.join(root_dir, file)
+                        file_status.append("✅ liked_posts.json found")
+                    elif file == "post_comments_1.json" and self.json_files['post_comments'] is None:
+                        self.json_files['post_comments'] = os.path.join(root_dir, file)
+                        file_status.append("✅ post_comments_1.json found")
+                    elif file == "recommended_topics.json" and self.json_files['recommended_topics'] is None:
+                        self.json_files['recommended_topics'] = os.path.join(root_dir, file)
+                        file_status.append("✅ recommended_topics.json found")
+                    elif file == "story_likes.json" and self.json_files['story_likes'] is None:
+                        self.json_files['story_likes'] = os.path.join(root_dir, file)
+                        file_status.append("✅ story_likes.json found")
+
+            # For any files still not found, add missing status
+            if self.json_files['liked_posts'] is None:
                 file_status.append("❌ liked_posts.json not found")
-
-            # Look for post_comments_1.json
-            post_comments_path = os.path.join(self.folder_selected, "post_comments_1.json")
-            if os.path.exists(post_comments_path):
-                self.json_files['post_comments'] = post_comments_path
-                file_status.append("✅ post_comments_1.json found")
-            else:
-                self.json_files['post_comments'] = None
+            if self.json_files['post_comments'] is None:
                 file_status.append("❌ post_comments_1.json not found")
-
-            # Look for recommended_topics.json
-            recommended_topics_path = os.path.join(self.folder_selected, "recommended_topics.json")
-            if os.path.exists(recommended_topics_path):
-                self.json_files['recommended_topics'] = recommended_topics_path
-                file_status.append("✅ recommended_topics.json found")
-            else:
-                self.json_files['recommended_topics'] = None
+            if self.json_files['recommended_topics'] is None:
                 file_status.append("❌ recommended_topics.json not found")
-
-            # Look for story_likes.json
-            story_likes_path = os.path.join(self.folder_selected, "story_likes.json")
-            if os.path.exists(story_likes_path):
-                self.json_files['story_likes'] = story_likes_path
-                file_status.append("✅ story_likes.json found")
-            else:
-                self.json_files['story_likes'] = None
+            if self.json_files['story_likes'] is None:
                 file_status.append("❌ story_likes.json not found")
 
-            # Update the label with folder path and file statuses
             status_text = f"Selected Folder: {self.folder_selected}\n" + "\n".join(file_status)
             self.label.config(text=status_text)
 
@@ -91,7 +85,7 @@ class InstagramArchiveApp:
         # Get the directory containing the UI script
         current_dir = os.path.dirname(os.path.abspath(__file__))
         parent_dir = os.path.dirname(current_dir)
-        
+
         script_names = {
             "Run Story Likes": os.path.join(parent_dir, "core", "story_likes.py"),
             "Run Liked Posts": os.path.join(parent_dir, "core", "liked_posts.py"),
@@ -114,16 +108,16 @@ class InstagramArchiveApp:
         # Get the directory containing the UI script
         current_dir = os.path.dirname(os.path.abspath(__file__))
         parent_dir = os.path.dirname(current_dir)
-        
+
         # Mapping of scripts to their output image
         output_images = {
-            os.path.join(parent_dir, "core", "story_likes.py"): 
+            os.path.join(parent_dir, "core", "story_likes.py"):
                 os.path.join(parent_dir, "images", "story_likes_visualization.png"),
-            os.path.join(parent_dir, "core", "liked_posts.py"): 
+            os.path.join(parent_dir, "core", "liked_posts.py"):
                 os.path.join(parent_dir, "images", "liked_posts_wordcloud.png"),
-            os.path.join(parent_dir, "core", "top_topics.py"): 
+            os.path.join(parent_dir, "core", "top_topics.py"):
                 os.path.join(parent_dir, "images", "top_topics.png"),
-            os.path.join(parent_dir, "core", "most_commented_on_users.py"): 
+            os.path.join(parent_dir, "core", "most_commented_on_users.py"):
                 os.path.join(parent_dir, "images", "post_comments.png"),
         }
 
@@ -135,7 +129,7 @@ class InstagramArchiveApp:
                 self.display_visualization(output_image)
             else:
                 messagebox.showwarning("Warning", "Visualization file not found")
-        
+
         except subprocess.CalledProcessError as e:
             messagebox.showerror("Error", f"Error executing {script_name}: {e}")
 

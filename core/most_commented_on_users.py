@@ -1,4 +1,4 @@
-'''
+"""
 Preservr Data Visualizations
 Author: Luca Carnegie
 Description: This module provides visualization tools for analyzing and displaying
@@ -8,7 +8,7 @@ Description: This module provides visualization tools for analyzing and displayi
 Input: Comment data files stored in the 'data' directory
 Output: Visualization files saved to the 'output' directory
 Date: 2023-11-21
-'''
+"""
 
 import json
 import pandas as pd
@@ -16,6 +16,15 @@ from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 import os
 import sys
+
+def find_file_in_subdirectories(folder_path, filename):
+    """
+    Recursively search for the specified file in subdirectories.
+    """
+    for root, dirs, files in os.walk(folder_path):
+        if filename in files:
+            return os.path.join(root, filename)
+    return None
 
 def most_commented_barchart(owner_counts, output_path):
     """
@@ -97,11 +106,11 @@ def process_comments(input_folder, output_path=None):
         output_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 
                                  "images", "post_comments.png")
     
-    # Find the post_comments file in the input folder
-    comments_path = os.path.join(input_folder, "post_comments_1.json")
+    # Search for post_comments_1.json in the input folder and its subdirectories
+    comments_path = find_file_in_subdirectories(input_folder, "post_comments_1.json")
     
-    if not os.path.exists(comments_path):
-        print(f"Error: Could not find post_comments_1.json in {input_folder}")
+    if comments_path is None:
+        print(f"Error: Could not find post_comments_1.json in {input_folder} or its subdirectories")
         return False
     
     # Load and process the data
