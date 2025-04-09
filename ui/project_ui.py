@@ -144,7 +144,7 @@ class InstagramArchiveApp:
 
             if script_name_only == "followers_following.py":
                 # Inform about the text output
-                txt_path = os.path.join(self.folder_selected, "follow_analysis.txt")
+                txt_path = os.path.join(self.folder_selected, "OUTPUT_FOLDER", "follow_analysis.txt")
                 if os.path.exists(txt_path):
                     messagebox.showinfo(
                         "Analysis Complete",
@@ -156,7 +156,7 @@ class InstagramArchiveApp:
                 # Handle image display if the script has a visualization output
                 output_image_name = output_images.get(script_name_only)
                 if output_image_name:
-                    output_image_path = os.path.join(self.folder_selected, output_image_name)
+                    output_image_path = os.path.join(self.folder_selected, "OUTPUT_FOLDER", output_image_name)
                     if os.path.exists(output_image_path):
                         self.display_visualization(output_image_path)
                     else:

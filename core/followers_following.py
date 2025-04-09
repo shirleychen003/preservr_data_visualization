@@ -3,9 +3,9 @@ Preservr Data Visualizations - Followers and Following
 
 Author: Shirley Chen
 Description: This module analyzes follower and following user data and displays mutuals, users who you follow but
-don't follow you back, and users that follow you but you don't follow back.
+don't follow you back, and users that follow you that you don't follow back.
 Input: followers_1.json, following.json
-Output: txt file with the aforementioned infomation saved to the 'OUTPUT_FOLDER' directory
+Output: txt file with the aforementioned information saved to the 'OUTPUT_FOLDER' directory
 Date: 2025-03
 """
 import os

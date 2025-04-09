@@ -18,6 +18,7 @@ def find_file_in_subdirectories(folder_path, filename):
 def generate_topic_wordcloud(folder_path):
     """
     Generate a word cloud from recommended topics in the given folder.
+    Saves the image to an OUTPUT_FOLDER inside folder_path.
     """
     # Search for the recommended_topics.json file in the folder and its subdirectories
     topics_path = find_file_in_subdirectories(folder_path, "recommended_topics.json")
@@ -26,8 +27,12 @@ def generate_topic_wordcloud(folder_path):
         print(f"Error: Could not find recommended_topics.json in {folder_path} or its subdirectories")
         return
 
-    # Construct the output path
-    output_path = os.path.join(folder_path, "top_topics.png")
+    # Create OUTPUT_FOLDER
+    output_folder = os.path.join(folder_path, "OUTPUT_FOLDER")
+    os.makedirs(output_folder, exist_ok=True)
+
+    # Construct the output path inside OUTPUT_FOLDER
+    output_path = os.path.join(output_folder, "top_topics.png")
 
     # Load the JSON file
     with open(topics_path, "r", encoding="utf-8") as file:
@@ -39,6 +44,10 @@ def generate_topic_wordcloud(folder_path):
         for item in data.get("topics_your_topics", [])
         if "Name" in item.get("string_map_data", {})
     ]
+
+    if not topics:
+        print("No topics found to generate word cloud.")
+        return
 
     # Join topics into a single string for word cloud generation
     text = " ".join(topics)
