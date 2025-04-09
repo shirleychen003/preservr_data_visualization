@@ -1,3 +1,13 @@
+"""
+Preservr Data Visualizations - Followers and Following
+
+Author: Shirley Chen
+Description: This module analyzes follower and following user data and displays mutuals, users who you follow but
+don't follow you back, and users that follow you but you don't follow back.
+Input: followers_1.json, following.json
+Output: txt file with the aforementioned infomation saved to the 'OUTPUT_FOLDER' directory
+Date: 2025-03
+"""
 import os
 import json
 import sys
@@ -36,10 +46,10 @@ def load_usernames(filepath, label):
 def analyze_follow_data(folder_path):
     """
     Locate files and analyze followers vs. following data.
+    Save results to OUTPUT_FOLDER.
     """
     followers_file = find_file_in_subdirectories(folder_path, "followers_1.json")
     following_file = find_file_in_subdirectories(folder_path, "following.json")
-    output_file = os.path.join(folder_path, "follow_analysis.txt")
 
     if not followers_file or not following_file:
         print("Error: One or both required JSON files not found.")
@@ -54,6 +64,12 @@ def analyze_follow_data(folder_path):
     mutuals = sorted(followers_set & following_set)
     fans = sorted(followers_set - following_set)
     not_following_back = sorted(following_set - followers_set)
+
+    # Create OUTPUT_FOLDER if it doesn't exist
+    output_folder = os.path.join(folder_path, "OUTPUT_FOLDER")
+    os.makedirs(output_folder, exist_ok=True)
+
+    output_file = os.path.join(output_folder, "follow_analysis.txt")
 
     with open(output_file, "w", encoding="utf-8") as out:
         out.write("Mutuals:\n")

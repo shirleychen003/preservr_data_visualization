@@ -26,6 +26,7 @@ def parse_percentage_string(raw_str):
 def generate_age_distribution_chart(folder_path):
     """
     Generate a grouped bar chart of follower age distribution by gender.
+    Saves it in OUTPUT_FOLDER inside the provided folder_path.
     """
     # Locate the JSON file
     input_path = find_file_in_subdirectories(folder_path, "audience_insights.json")
@@ -33,8 +34,12 @@ def generate_age_distribution_chart(folder_path):
         print(f"Error: audience_insights.json not found in {folder_path} or its subdirectories")
         return
 
+    # Define OUTPUT_FOLDER path
+    output_folder = os.path.join(folder_path, "OUTPUT_FOLDER")
+    os.makedirs(output_folder, exist_ok=True)  # Create folder if it doesn't exist
+
     # Define output file path
-    output_path = os.path.join(folder_path, "age_gender_distribution.png")
+    output_path = os.path.join(output_folder, "age_gender_distribution.png")
 
     # Load JSON data
     with open(input_path, "r", encoding="utf-8") as file:
@@ -72,12 +77,13 @@ def generate_age_distribution_chart(folder_path):
     plt.xticks(x, age_groups)
     plt.xlabel("Age Group")
     plt.ylabel("Number of Followers")
-    plt.title("Preservr Audience: Age Distribution by Gender")
+    plt.title("Age Distribution by Gender")
     plt.legend()
     plt.tight_layout()
 
-    # Save the figure
+    # Save the figure in OUTPUT_FOLDER
     plt.savefig(output_path, dpi=300, bbox_inches="tight")
+    print(f"Saved: {output_path}")
 
 # Entry point for CLI usage
 if __name__ == "__main__":
