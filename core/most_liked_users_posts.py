@@ -22,8 +22,10 @@ def find_file_in_subdirectories(folder_path, filename):
 def most_liked_wordcloud(folder_path):
     """
     Create a wordcloud showing the number of likes per title (media owner).
+    Saves output image to OUTPUT_FOLDER.
     """
     global title_counts
+
     # Create a dictionary of titles and their like counts
     wordcloud_data = dict(zip(title_counts["Title"], title_counts["Like Count"]))
 
@@ -37,8 +39,10 @@ def most_liked_wordcloud(folder_path):
     plt.title("Accounts You Liked Most")
     plt.tight_layout()
 
-    # Define the output path to save the wordcloud image
-    output_path = os.path.join(folder_path, "liked_posts_wordcloud.png")
+    # Define the output path inside OUTPUT_FOLDER
+    output_folder = os.path.join(folder_path, "OUTPUT_FOLDER")
+    os.makedirs(output_folder, exist_ok=True)
+    output_path = os.path.join(output_folder, "liked_posts_wordcloud.png")
 
     # Save as PNG
     plt.savefig(output_path, dpi=300, bbox_inches="tight")
@@ -52,18 +56,15 @@ def load_data(folder_path):
     """
     global titles, title_counts
 
-    # Search for the liked_posts.json file in the folder and its subdirectories
     liked_posts_path = find_file_in_subdirectories(folder_path, "liked_posts.json")
 
     if liked_posts_path is None:
         print(f"Error: Could not find liked_posts.json in {folder_path} or its subdirectories")
         return
 
-    # Load JSON file
     with open(liked_posts_path, "r", encoding="utf-8") as file:
         data = json.load(file)
 
-    # Extract titles (media owners) from the data
     media_titles = []
     for item in data.get("likes_media_likes", []):
         try:
@@ -73,7 +74,6 @@ def load_data(folder_path):
         except (KeyError, TypeError):
             continue
 
-    # Create a DataFrame and count occurrences
     df = pd.DataFrame({"Title": media_titles})
     title_counts = df["Title"].value_counts().reset_index()
     title_counts.columns = ["Title", "Like Count"]
