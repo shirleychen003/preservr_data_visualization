@@ -61,9 +61,9 @@ class InstagramArchiveApp:
                     if file == "liked_posts.json" and self.json_files['liked_posts'] is None:
                         self.json_files['liked_posts'] = os.path.join(root_dir, file)
                         file_status.append("✅ liked_posts.json found")
-                    elif file == "post_comments_1.json" and self.json_files['post_comments'] is None:
-                        self.json_files['post_comments'] = os.path.join(root_dir, file)
-                        file_status.append("✅ post_comments_1.json found")
+                    # elif file == "post_comments_1.json" and self.json_files['post_comments'] is None:
+                    #     self.json_files['post_comments'] = os.path.join(root_dir, file)
+                    #     file_status.append("✅ post_comments_1.json found")
                     elif file == "recommended_topics.json" and self.json_files['recommended_topics'] is None:
                         self.json_files['recommended_topics'] = os.path.join(root_dir, file)
                         file_status.append("✅ recommended_topics.json found")
@@ -83,8 +83,8 @@ class InstagramArchiveApp:
             # For any files still not found, add missing status
             if self.json_files['liked_posts'] is None:
                 file_status.append("❌ liked_posts.json not found")
-            if self.json_files['post_comments'] is None:
-                file_status.append("❌ post_comments_1.json not found")
+            # if self.json_files['post_comments'] is None:
+            #     file_status.append("❌ post_comments_1.json not found")
             if self.json_files['recommended_topics'] is None:
                 file_status.append("❌ recommended_topics.json not found")
             if self.json_files['story_likes'] is None:
@@ -108,7 +108,7 @@ class InstagramArchiveApp:
             "Story Likes": os.path.join(parent_dir, "core", "most_liked_users_stories.py"),
             "Liked Posts": os.path.join(parent_dir, "core", "most_liked_users_posts.py"),
             "Word Cloud Topics": os.path.join(parent_dir, "core", "top_topics.py"),
-            "Most Commented On Users": os.path.join(parent_dir, "core", "most_commented_on_users.py"),
+            # "Most Commented On Users": os.path.join(parent_dir, "core", "most_commented_on_users.py"),
             "Age and Gender Distribution": os.path.join(parent_dir, "core", "age_gender_distribution.py"),
             "Followers and Following Analysis": os.path.join(parent_dir, "core", "followers_following.py"),
         }
@@ -134,7 +134,7 @@ class InstagramArchiveApp:
             "most_liked_users_stories.py": "story_likes_visualization.png",
             "most_liked_users_posts.py": "liked_posts_wordcloud.png",
             "top_topics.py": "top_topics.png",
-            "most_commented_on_users.py": "post_comments.png",
+            # "most_commented_on_users.py": "post_comments.png",
             "age_gender_distribution.py": "age_gender_distribution.png",
         }
 
