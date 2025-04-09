@@ -50,7 +50,9 @@ class InstagramArchiveApp:
                 'post_comments': None,
                 'recommended_topics': None,
                 'story_likes': None,
-                'audience_insights': None
+                'audience_insights': None,
+                'followers_1': None,
+                'following': None
             }
 
             # Recursive search for required JSON files
@@ -71,6 +73,12 @@ class InstagramArchiveApp:
                     elif file == "audience_insights.json" and self.json_files['audience_insights'] is None:
                         self.json_files['audience_insights'] = os.path.join(root_dir, file)
                         file_status.append("✅ audience_insights.json found")
+                    elif file == "followers_1.json" and self.json_files['followers_1'] is None:
+                        self.json_files['followers_1'] = os.path.join(root_dir, file)
+                        file_status.append("✅ followers_1.json found")
+                    elif file == "following.json" and self.json_files['following'] is None:
+                        self.json_files['following'] = os.path.join(root_dir, file)
+                        file_status.append("✅ following.json found")
 
             # For any files still not found, add missing status
             if self.json_files['liked_posts'] is None:
@@ -83,6 +91,10 @@ class InstagramArchiveApp:
                 file_status.append("❌ story_likes.json not found")
             if self.json_files['audience_insights'] is None:
                 file_status.append("❌ story_likes.json not found")
+            if self.json_files['followers_1'] is None:
+                file_status.append("❌ followers_1.json not found")
+            if self.json_files['following'] is None:
+                file_status.append("❌ following.json not found")
 
             status_text = f"Selected Folder: {self.folder_selected}\n" + "\n".join(file_status)
             self.label.config(text=status_text)
@@ -93,11 +105,12 @@ class InstagramArchiveApp:
         parent_dir = os.path.dirname(current_dir)
 
         script_names = {
-            "Run Story Likes": os.path.join(parent_dir, "core", "most_liked_users_stories.py"),
-            "Run Liked Posts": os.path.join(parent_dir, "core", "most_liked_users_posts.py"),
-            "Run Word Cloud Topics": os.path.join(parent_dir, "core", "top_topics.py"),
-            "Run Most Commented On Users": os.path.join(parent_dir, "core", "most_commented_on_users.py"),
-            "Run Age and Gender Distribution": os.path.join(parent_dir, "core", "age_gender_distribution.py"),
+            "Story Likes": os.path.join(parent_dir, "core", "most_liked_users_stories.py"),
+            "Liked Posts": os.path.join(parent_dir, "core", "most_liked_users_posts.py"),
+            "Word Cloud Topics": os.path.join(parent_dir, "core", "top_topics.py"),
+            "Most Commented On Users": os.path.join(parent_dir, "core", "most_commented_on_users.py"),
+            "Age and Gender Distribution": os.path.join(parent_dir, "core", "age_gender_distribution.py"),
+            "Followers and Following Analysis": os.path.join(parent_dir, "core", "followers_following.py"),
         }
 
         button_frame = tk.Frame(self.root, bg="#2e2e2e")
@@ -116,30 +129,40 @@ class InstagramArchiveApp:
         current_dir = os.path.dirname(os.path.abspath(__file__))
         parent_dir = os.path.dirname(current_dir)
 
-        # Assuming the visualizations are saved in the same folder as the selected folder
+        # Output visualizations mapping
         output_images = {
             "most_liked_users_stories.py": "story_likes_visualization.png",
             "most_liked_users_posts.py": "liked_posts_wordcloud.png",
             "top_topics.py": "top_topics.png",
             "most_commented_on_users.py": "post_comments.png",
-            "age_gender_distribution.py": "age_gender_distribution.png"
+            "age_gender_distribution.py": "age_gender_distribution.png",
         }
 
         try:
             subprocess.run([sys.executable, script_name, self.folder_selected], check=True)
-            messagebox.showinfo("Success", f"Executed {script_name} successfully!")
-
-            # Dynamic path to visualization
             script_name_only = os.path.basename(script_name)
-            output_image_name = output_images.get(script_name_only)
-            if output_image_name:
-                output_image_path = os.path.join(self.folder_selected, output_image_name)
-                if os.path.exists(output_image_path):
-                    self.display_visualization(output_image_path)
+
+            if script_name_only == "followers_following.py":
+                # Inform about the text output
+                txt_path = os.path.join(self.folder_selected, "follow_analysis.txt")
+                if os.path.exists(txt_path):
+                    messagebox.showinfo(
+                        "Analysis Complete",
+                        f"✅ Follower/Following analysis complete!\n\n📄 Output saved to:\n{txt_path}"
+                    )
                 else:
-                    messagebox.showwarning("Warning", "Visualization file not found in selected folder")
+                    messagebox.showwarning("Warning", "Analysis script ran but no output file was found.")
             else:
-                messagebox.showwarning("Warning", "No output image path found for this script")
+                # Handle image display if the script has a visualization output
+                output_image_name = output_images.get(script_name_only)
+                if output_image_name:
+                    output_image_path = os.path.join(self.folder_selected, output_image_name)
+                    if os.path.exists(output_image_path):
+                        self.display_visualization(output_image_path)
+                    else:
+                        messagebox.showwarning("Warning", "Visualization file not found in selected folder")
+
+                messagebox.showinfo("Success", f"Executed {script_name_only} successfully!")
 
         except subprocess.CalledProcessError as e:
             messagebox.showerror("Error", f"Error executing {script_name}: {e}")

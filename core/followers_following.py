@@ -1,10 +1,15 @@
 import os
 import json
+import sys
 
-# File paths
-FOLLOWERS_FILE = "../test_data/followers_1.json"
-FOLLOWING_FILE = "../test_data/following.json"
-OUTPUT_FILE = "../test_data/follow_analysis.txt"
+def find_file_in_subdirectories(folder_path, filename):
+    """
+    Recursively search for the specified file in subdirectories.
+    """
+    for root, dirs, files in os.walk(folder_path):
+        if filename in files:
+            return os.path.join(root, filename)
+    return None
 
 def load_usernames(filepath, label):
     """
@@ -15,7 +20,6 @@ def load_usernames(filepath, label):
         with open(filepath, "r", encoding="utf-8") as file:
             data = json.load(file)
 
-            # If data is a dict with a key like "relationships_following"
             if isinstance(data, dict) and "relationships_following" in data:
                 data = data["relationships_following"]
 
@@ -25,36 +29,33 @@ def load_usernames(filepath, label):
                     usernames.append(username)
 
             print(f"[{label}] Loaded {len(usernames)} usernames from {filepath}")
-
     except Exception as e:
         print(f"Error loading {label}: {e}")
     return usernames
 
+def analyze_follow_data(folder_path):
+    """
+    Locate files and analyze followers vs. following data.
+    """
+    followers_file = find_file_in_subdirectories(folder_path, "followers_1.json")
+    following_file = find_file_in_subdirectories(folder_path, "following.json")
+    output_file = os.path.join(folder_path, "follow_analysis.txt")
 
-def analyze_follow_data():
-    followers = load_usernames(FOLLOWERS_FILE, "Followers")
-    following = load_usernames(FOLLOWING_FILE, "Following")
+    if not followers_file or not following_file:
+        print("Error: One or both required JSON files not found.")
+        return
+
+    followers = load_usernames(followers_file, "Followers")
+    following = load_usernames(following_file, "Following")
 
     followers_set = set(followers)
     following_set = set(following)
-
-    print(f"\nSet Sizes:")
-    print(f"- Followers: {len(followers_set)}")
-    print(f"- Following: {len(following_set)}")
-
-    # Show some sample values
-    print(f"\nSample followers: {followers[:5]}")
-    print(f"Sample following: {following[:5]}")
 
     mutuals = sorted(followers_set & following_set)
     fans = sorted(followers_set - following_set)
     not_following_back = sorted(following_set - followers_set)
 
-    print(f"\n🔁 Found {len(mutuals)} mutuals.")
-    print(f"👀 Fans (they follow you, you don’t follow back): {len(fans)}")
-    print(f"🚫 Not following back (you follow them, they don’t follow you): {len(not_following_back)}")
-
-    with open(OUTPUT_FILE, "w", encoding="utf-8") as out:
+    with open(output_file, "w", encoding="utf-8") as out:
         out.write("Mutuals:\n")
         out.write("\n".join(mutuals) + "\n\n")
         out.write("People who follow me but I don’t follow back:\n")
@@ -62,7 +63,12 @@ def analyze_follow_data():
         out.write("People I follow but who don’t follow me back:\n")
         out.write("\n".join(not_following_back))
 
-    print(f"\n✅ Analysis written to {OUTPUT_FILE}")
+    print(f"\n✅ Analysis written to {output_file}")
 
 if __name__ == "__main__":
-    analyze_follow_data()
+    if len(sys.argv) < 2:
+        print("Usage: python followers_following.py <folder_path>")
+        sys.exit(1)
+
+    input_folder = sys.argv[1]
+    analyze_follow_data(input_folder)

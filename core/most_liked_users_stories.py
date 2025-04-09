@@ -1,21 +1,17 @@
 """
-Preservr Data Visualizations - Story Likes
-Author: Shirley Chen
-Description: This module provides visualization tools for analyzing and displaying
-             story likes data for the Preservr project. It processes story likes datasets
-             and generates a word cloud to visualize which users had interacted most with
-             the user's stories.
-Input: story_likes.json file stored in the provided folder path.
-Output: Visualization saved as story_likes_visualization.png in the same folder.
-Date: 2025-03
+Instagram Follow Data Analyzer
+Author: Shirlye Chen
+Description: This script compares a user's Instagram followers and followings
+             using JSON files exported from Instagram. It identifies mutuals,
+             fans (followers not followed back), and people not following back.
+Input: followers_1.json and following.json located in subdirectories under a given folder.
+Output: follow_analysis.txt written to the same folder as the data.
+Date: 2025-04
 """
 
 import os
 import sys
 import json
-import matplotlib.pyplot as plt
-from collections import Counter
-from wordcloud import WordCloud
 
 def find_file_in_subdirectories(folder_path, filename):
     """
@@ -26,54 +22,76 @@ def find_file_in_subdirectories(folder_path, filename):
             return os.path.join(root, filename)
     return None
 
-def generate_story_likes_wordcloud(folder_path):
+def load_usernames(filepath, label):
     """
-    Generate a word cloud from story likes in the given folder.
+    Load usernames from Instagram JSON file. Supports top-level lists and nested keys.
     """
-    # Search for story_likes.json in the folder and its subdirectories
-    input_path = find_file_in_subdirectories(folder_path, "story_likes.json")
-    if input_path is None:
-        print(f"Error: story_likes.json not found in {folder_path} or its subdirectories")
+    usernames = []
+    try:
+        with open(filepath, "r", encoding="utf-8") as file:
+            data = json.load(file)
+
+            # Handle nested structure in following.json
+            if isinstance(data, dict) and "relationships_following" in data:
+                data = data["relationships_following"]
+
+            for entry in data:
+                if "string_list_data" in entry and entry["string_list_data"]:
+                    username = entry["string_list_data"][0]["value"].strip()
+                    usernames.append(username)
+
+            print(f"[{label}] Loaded {len(usernames)} usernames from {filepath}")
+
+    except Exception as e:
+        print(f"Error loading {label}: {e}")
+    return usernames
+
+def analyze_follow_data(base_folder):
+    """
+    Compare followers and following data, write mutuals, fans, and non-followers to file.
+    """
+    followers_path = find_file_in_subdirectories(base_folder, "followers_1.json")
+    following_path = find_file_in_subdirectories(base_folder, "following.json")
+
+    if not followers_path or not following_path:
+        print("❌ Error: Required files not found in subdirectories.")
         return
 
-    # Construct the output path for the visualization
-    output_path = os.path.join(folder_path, "story_likes_visualization.png")
+    followers = load_usernames(followers_path, "Followers")
+    following = load_usernames(following_path, "Following")
 
-    # Load JSON file
-    with open(input_path, "r", encoding="utf-8") as file:
-        data = json.load(file)
+    followers_set = set(followers)
+    following_set = set(following)
 
-    # Extract story likes
-    likes = [entry["title"] for entry in data.get("story_activities_story_likes", [])]
+    print(f"\nSet Sizes:")
+    print(f"- Followers: {len(followers_set)}")
+    print(f"- Following: {len(following_set)}")
 
-    # Count occurrences of each user
-    like_counts = Counter(likes)
+    mutuals = sorted(followers_set & following_set)
+    fans = sorted(followers_set - following_set)
+    not_following_back = sorted(following_set - followers_set)
 
-    if not like_counts:
-        print("No likes data found.")
-        return
+    print(f"\n🔁 Mutuals: {len(mutuals)}")
+    print(f"👀 Fans (follow you, not followed back): {len(fans)}")
+    print(f"🚫 Not following back (you follow, they don't): {len(not_following_back)}")
 
-    # Identify top liker
-    most_active_liker, max_likes = like_counts.most_common(1)[0]
+    output_path = os.path.join(base_folder, "follow_analysis.txt")
+    with open(output_path, "w", encoding="utf-8") as out:
+        out.write("🔁 Mutuals:\n")
+        out.write("\n".join(mutuals) + "\n\n")
 
-    # Generate word cloud
-    wc = WordCloud(width=800, height=500, background_color="white", colormap="coolwarm")
-    wc.generate_from_frequencies(like_counts)
+        out.write("👀 Fans (follow you, not followed back):\n")
+        out.write("\n".join(fans) + "\n\n")
 
-    # Plot and save the word cloud
-    plt.figure(figsize=(10, 5))
-    plt.imshow(wc, interpolation="bilinear")
-    plt.axis("off")
-    plt.title(f"Frequent Story Likers (Top: {most_active_liker} - {max_likes} likes)")
+        out.write("🚫 Not following back (you follow, they don't):\n")
+        out.write("\n".join(not_following_back))
 
-    # Save the figure
-    plt.savefig(output_path, dpi=300, bbox_inches="tight")
+    print(f"\n✅ Analysis written to {output_path}")
 
-# Entry point for CLI usage
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("Usage: python story_likes_visualization.py <folder_path>")
+        print("Usage: python follow_data_analyzer.py <folder_path>")
         sys.exit(1)
 
-    folder = sys.argv[1]
-    generate_story_likes_wordcloud(folder)
+    base_folder = sys.argv[1]
+    analyze_follow_data(base_folder)
