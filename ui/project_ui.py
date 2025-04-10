@@ -111,6 +111,7 @@ class InstagramArchiveApp:
             # "Most Commented On Users": os.path.join(parent_dir, "core", "most_commented_on_users.py"),
             "Age and Gender Distribution": os.path.join(parent_dir, "core", "age_gender_distribution.py"),
             "Followers and Following Analysis": os.path.join(parent_dir, "core", "followers_following.py"),
+            "Most Liked Users Combined": os.path.join(parent_dir, "core", "most_liked_users.py"),
         }
 
         button_frame = tk.Frame(self.root, bg="#2e2e2e")
@@ -136,6 +137,7 @@ class InstagramArchiveApp:
             "top_topics.py": "top_topics.png",
             # "most_commented_on_users.py": "post_comments.png",
             "age_gender_distribution.py": "age_gender_distribution.png",
+            "most_liked_users.py": "most_liked_users_barchart.png",
         }
 
         try:
@@ -183,8 +185,3 @@ class InstagramArchiveApp:
         except Exception as e:
             messagebox.showerror("Error", f"Could not load visualization: {e}")
 
-# Run the application
-if __name__ == "__main__":
-    root = tk.Tk()
-    app = InstagramArchiveApp(root)
-    root.mainloop()
