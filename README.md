@@ -1,6 +1,6 @@
-# Preservr
+# Preservr Archive Visual Analysis Tool
 
-Preservr is a toolkit for analyzing your social media presence online. It provides visual analysis of Instagram archive data, helping you understand your online interactions and engagement patterns.
+The Preservr Archive Visual Analysis Tool (AVAT) is a tool for understanding your social media presence in broad strokes, so that you can make more informed decisions when archiving your Instagram data. It provides visual analysis of Instagram archive data, helping you understand your online interactions and engagement patterns.
 
 ## Prerequisites
 
