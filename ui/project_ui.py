@@ -436,4 +436,3 @@ class InstagramArchiveApp(Tk):
         
         Button(warning_window, text="OK", font=DEFAULT_FONT,
                command=warning_window.destroy, width=10).pack(pady=15)
-
