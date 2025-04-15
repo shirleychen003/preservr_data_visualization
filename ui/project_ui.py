@@ -47,7 +47,7 @@ class InstagramArchiveApp:
             file_status = []
             self.json_files = {
                 'liked_posts': None,
-                'post_comments': None,
+                # 'post_comments': None,
                 'recommended_topics': None,
                 'story_likes': None,
                 'audience_insights': None,
@@ -105,11 +105,11 @@ class InstagramArchiveApp:
         parent_dir = os.path.dirname(current_dir)
 
         script_names = {
-            "Story Likes": os.path.join(parent_dir, "core", "most_liked_users_stories.py"),
+            # "Story Likes": os.path.join(parent_dir, "core", "most_liked_users_stories.py"),
             "Liked Posts": os.path.join(parent_dir, "core", "most_liked_users_posts.py"),
-            "Word Cloud Topics": os.path.join(parent_dir, "core", "top_topics.py"),
+            "Recommended Topics": os.path.join(parent_dir, "core", "top_topics.py"),
             # "Most Commented On Users": os.path.join(parent_dir, "core", "most_commented_on_users.py"),
-            "Age and Gender Distribution": os.path.join(parent_dir, "core", "age_gender_distribution.py"),
+            "Demographic Information": os.path.join(parent_dir, "core", "age_gender_distribution.py"),
             "Followers and Following Analysis": os.path.join(parent_dir, "core", "followers_following.py"),
             "Most Liked Users Combined": os.path.join(parent_dir, "core", "most_liked_users.py"),
         }
@@ -132,7 +132,7 @@ class InstagramArchiveApp:
 
         # Output visualizations mapping
         output_images = {
-            "most_liked_users_stories.py": "story_likes_visualization.png",
+            # "most_liked_users_stories.py": "story_likes_visualization.png",
             "most_liked_users_posts.py": "liked_posts_wordcloud.png",
             "top_topics.py": "top_topics.png",
             # "most_commented_on_users.py": "post_comments.png",
