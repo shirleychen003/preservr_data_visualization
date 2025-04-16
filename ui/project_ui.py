@@ -46,7 +46,7 @@ class InstagramArchiveApp(Tk):
         """Create and arrange all UI widgets in the application."""
         # Row 0: Title Label (centered across two columns)
         self.title_label = Label(self, text="Instagram Archive Visual Analysis Tool", font=TITLE_FONT,
-                                 bg=BG_COLOR, fg="#333333")
+                                 bg=BG_COLOR, fg="black")
         self.title_label.grid(row=0, column=0, columnspan=2, pady=(20, 10))
         
         # Row 1: Image Display Area (centered; fixed dimensions)
@@ -69,12 +69,16 @@ class InstagramArchiveApp(Tk):
         file_info_frame = Frame(bottom_frame, bg=BG_COLOR)
         file_info_frame.grid(row=0, column=0, padx=(0,10))
         # Button to select folder.
-        self.btn_select = Button(file_info_frame, text="Select Folder", command=self.select_folder,
-                                 font=DEFAULT_FONT)
+        self.btn_select = Button(
+            file_info_frame, text="Select Folder", command=self.select_folder,
+            font=DEFAULT_FONT, fg="black", bg="#d3d3d3",
+            activebackground="#d3d3d3", activeforeground="black",
+            bd=0, highlightthickness=0
+        )
         self.btn_select.pack(anchor="w", padx=5, pady=(0,5))
         # Label to display the selected folder info.
         self.folder_label = Label(file_info_frame, text="No folder selected", font=DEFAULT_FONT,
-                                  bg=BG_COLOR, anchor="w", justify="left", wraplength=400)
+                                  bg=BG_COLOR, fg="black", anchor="w", justify="left", wraplength=400)
         self.folder_label.pack(anchor="w", padx=5)
 
         # Right subframe: Script buttons arranged in a 3x2 grid.
@@ -99,7 +103,8 @@ class InstagramArchiveApp(Tk):
         row_idx, col_idx = 0, 0
         for text, script in self.script_names.items():
             btn = Button(button_frame, text=text, command=lambda s=script: self.run_script(s),
-                 font=DEFAULT_FONT)
+                         font=DEFAULT_FONT, bd=0, highlightthickness=0,
+                         fg="black", bg="#d3d3d3", activebackground="#c0c0c0")
             btn.grid(row=row_idx, column=col_idx, padx=5, pady=5, sticky="nsew")
             self.script_buttons[text] = btn
             row_idx += 1
@@ -156,10 +161,10 @@ class InstagramArchiveApp(Tk):
 
     def _update_folder_display(self):
         """Update the UI to show which required files were found in the selected folder."""
-        
+
         # Build file status lines.
         file_status_lines = []
-        
+
         for key, path in self.json_files.items():
             if key == 'post_comments':  # Skip as before.
                 continue
@@ -167,10 +172,11 @@ class InstagramArchiveApp(Tk):
             status = "\u2713" if path is not None else "\u2717"
             display_name = f"{key}.json"
             file_status_lines.append(f"{status} {display_name}")
-        
+
         # Show only the basename of the folder to avoid overly long text.
         folder_display = os.path.basename(self.folder_selected) if self.folder_selected else "No folder selected"
         status_text = f"Selected Folder: {folder_display}\n" + "\n".join(file_status_lines)
+        self.folder_label.config(text=status_text, fg="black")
         self.folder_label.config(text=status_text)
 
     def run_script(self, script_path):
@@ -256,12 +262,11 @@ class InstagramArchiveApp(Tk):
         message = f"Cannot run {script_display}.\n\nThe following required files were not found in your Instagram archive:\n\n"
         message += "\n".join([f"• {file}" for file in missing_files])
         message += "\n\nPlease select a folder containing these files."
-        
-        Label(error_window, text=message, font=DEFAULT_FONT, bg=BG_COLOR, 
+
+        Label(error_window, text=message, font=DEFAULT_FONT, bg=BG_COLOR, fg="black",
               justify="left", wraplength=450, pady=20).pack(expand=True)
-        
-        # Add button to close the window
-        Button(error_window, text="OK", font=DEFAULT_FONT,
+
+        Button(error_window, text="OK", font=DEFAULT_FONT, fg="black", bg="#d3d3d3",
                command=error_window.destroy, width=10).pack(pady=15)
                
     def _run_script_thread(self, script_path, script_name_only, output_images):
@@ -323,9 +328,9 @@ class InstagramArchiveApp(Tk):
         def select_and_close():
             prompt_window.destroy()
             self.select_folder()
-            
+
         Button(button_frame, text="Select Folder", font=DEFAULT_FONT,
-               command=select_and_close, width=15).pack(side="left", padx=10)
+               command=select_and_close, width=15, bd=0, highlightthickness=0).pack(side="left")
         
         # Wait for the window to be closed
         self.wait_window(prompt_window)
@@ -349,8 +354,8 @@ class InstagramArchiveApp(Tk):
             "The Followers/Following Analysis is complete!\n\n"
             "Please open the 'OUTPUT_FOLDER' in your selected archive folder to view the follow_analysis.txt file with your results."
         )
-        
-        Label(instruction_window, text=message, font=DEFAULT_FONT, bg=BG_COLOR, 
+
+        Label(instruction_window, text=message, font=DEFAULT_FONT, bg=BG_COLOR, fg="black",
               justify="center", wraplength=450, pady=20).pack(expand=True)
         
         output_path = os.path.join(self.folder_selected, "OUTPUT_FOLDER")
@@ -406,11 +411,11 @@ class InstagramArchiveApp(Tk):
         x_position = (screen_width - 450) // 2
         y_position = (screen_height - 200) // 2
         error_window.geometry(f"450x200+{x_position}+{y_position}")
-        
-        Label(error_window, text=message, font=DEFAULT_FONT, bg=BG_COLOR, 
+
+        Label(error_window, text=message, font=DEFAULT_FONT, bg=BG_COLOR, fg="black",
               justify="center", wraplength=400, pady=20).pack(expand=True)
-        
-        Button(error_window, text="OK", font=DEFAULT_FONT,
+
+        Button(error_window, text="OK", font=DEFAULT_FONT, fg="black", bg="#d3d3d3",
                command=error_window.destroy, width=10).pack(pady=15)
 
     def show_warning(self, message):
@@ -430,9 +435,9 @@ class InstagramArchiveApp(Tk):
         x_position = (screen_width - 450) // 2
         y_position = (screen_height - 200) // 2
         warning_window.geometry(f"450x200+{x_position}+{y_position}")
-        
-        Label(warning_window, text=message, font=DEFAULT_FONT, bg=BG_COLOR, 
+
+        Label(error_window, text=message, font=DEFAULT_FONT, bg=BG_COLOR, fg="black",
               justify="center", wraplength=400, pady=20).pack(expand=True)
-        
-        Button(warning_window, text="OK", font=DEFAULT_FONT,
-               command=warning_window.destroy, width=10).pack(pady=15)
+
+        Button(error_window, text="OK", font=DEFAULT_FONT, fg="black", bg="#d3d3d3",
+               command=error_window.destroy, width=10).pack(pady=15)
